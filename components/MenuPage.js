@@ -22,6 +22,38 @@ export class MenuPage extends HTMLElement {
     const template = document.getElementById('menu-page-template');
     const content = template.content.cloneNode(true);
     this.root.appendChild(content);
+
+    window.addEventListener('appmenuchange', () => {
+      this.render();
+    });
+  }
+
+  render() {
+    //first check if there is a menu or not
+    if (app.store.menu) {
+      //can cache our menu since we'll be querying it multiple times
+      const menu = this.root.querySelector('#menu');
+      //check that there isn't something already in the menu
+      menu.innerHTML = '';
+      //loop through our category objects, each category has an array of
+      // associated products
+      for (let category of app.store.menu) {
+        const liCategory = document.createElement('li');
+        liCategory.innerHTML = `<h3>${category.name}</h3>
+            <ul class='category'>
+            </ul>
+            `;
+        menu.appendChild(liCategory);
+
+        category.products.forEach((product) => {
+          const item = document.createElement('product-item');
+          item.dataset.product = JSON.stringify(product);
+          liCategory.querySelector('ul').appendChild(item);
+        });
+      }
+    } else {
+      menu.innerHTML = 'Loading...';
+    }
   }
 }
 
