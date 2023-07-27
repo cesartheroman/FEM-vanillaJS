@@ -34,10 +34,9 @@ const Router = {
 
       default:
         if (route.startsWith('/product-')) {
-          pageElement = document.createElement('h1');
-          pageElement.textContent = 'Details';
+          pageElement = document.createElement('details-page');
           const paramId = route.substring(route.lastIndexOf('-') + 1);
-          pageElement.dataset.id = paramId;
+          pageElement.dataset.productId = paramId;
         }
     }
 
@@ -46,6 +45,8 @@ const Router = {
       const cache = document.querySelector('main');
       cache.innerHTML = '';
       cache.appendChild(pageElement);
+      window.scrollX = 0;
+      window.scrollY = 0;
     }
   },
 };
