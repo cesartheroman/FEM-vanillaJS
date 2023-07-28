@@ -26,6 +26,8 @@ export class MenuPage extends HTMLElement {
     window.addEventListener('appmenuchange', () => {
       this.render();
     });
+
+    this.render();
   }
 
   render() {
@@ -52,7 +54,7 @@ export class MenuPage extends HTMLElement {
         });
       }
     } else {
-      menu.innerHTML = 'Loading...';
+      this.root.querySelector('#menu').innerHTML = 'Loading...';
     }
   }
 }

@@ -1,4 +1,11 @@
 export class OrderPage extends HTMLElement {
+  //private class member denoted by the #
+  #user = {
+    name: '',
+    phone: '',
+    email: '',
+  };
+
   constructor() {
     super();
 
@@ -23,6 +30,43 @@ export class OrderPage extends HTMLElement {
     });
 
     this.render();
+  }
+
+  setFormBindings(form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      alert(
+        `Thanks for your order ${this.#user.name}. ${
+          this.#user.email
+            ? 'We will be sending you the receipt over email'
+            : 'Ask at the counter for a receipt.'
+        }`
+      );
+      this.#user.name = '';
+      this.#user.email = '';
+      this.#user.phone = '';
+
+      //TODO: send user and cart's details to the server
+    });
+
+    //Set double data binding
+    //setting value in user property and updating the form value
+    this.#user = new Proxy(this.#user, {
+      set(target, property, value) {
+        target[property] = value;
+        form.elements[property].value = value;
+        return true;
+      },
+    });
+
+    //setting value from form and updating user object Proxy
+    Array.from(form.elements).forEach((element) => {
+      if (element.name) {
+        element.addEventListener('change', () => {
+          this.#user[element.name] = element.value;
+        });
+      }
+    });
   }
 
   render() {
@@ -63,6 +107,9 @@ export class OrderPage extends HTMLElement {
         </li>
       `;
     }
+
+    //remeber we don't use document.querySelector here since the form only exists in the Shadow DOM, so must use this.root.querySelector()
+    this.setFormBindings(this.root.querySelector('form'));
   }
 }
 
